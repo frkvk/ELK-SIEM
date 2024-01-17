@@ -3,6 +3,8 @@ ELK SIEM with docker and basic license
 Links referencia
 https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html#_linux
 
+https://discuss.elastic.co/t/kibana-tls-to-elastic-cluster-in-docker-compose-self-signed-certificate-in-certificate-chain/224538/2
+
 https://www.elastic.co/es/blog/a-new-era-for-cluster-coordination-in-elasticsearch
 
 https://www.elastic.co/guide/en/logstash/current/monitoring-internal-collection-legacy.html
