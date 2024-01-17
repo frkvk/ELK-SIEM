@@ -235,6 +235,7 @@ services:
       - "5000:5000/udp"
     environment:
       - http.host= "0.0.0.0"
+      - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
       - xpack.monitoring.enabled=true
       - xpack.monitoring.elasticsearch.username=elastic
       - xpack.monitoring.elasticsearch.password=${ELASTIC_PASSWORD}
