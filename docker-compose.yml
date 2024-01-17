@@ -42,6 +42,11 @@ services:
           "      - localhost\n"\
           "    ip:\n"\
           "      - 127.0.0.1\n"\
+          "  - name: kibana\n"\
+          "    dns:\n"\
+          "      - kibana\n"\
+          "    ip:\n"\
+          "      - 192.168.10.200\n"\
           "  - name: logstash\n"\
           "    dns:\n"\
           "      - logstash\n"\
@@ -69,6 +74,7 @@ services:
       retries: 120
 
   es01:
+    container_name: es01_${STACK_VERSION}
     depends_on:
       setup:
         condition: service_healthy
@@ -112,6 +118,7 @@ services:
       retries: 120
 
   es02:
+    container_name: es02_${STACK_VERSION}
     depends_on:
       - es01
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
@@ -151,6 +158,7 @@ services:
       retries: 120
 
   es03:
+    container_name: es03_${STACK_VERSION}
     depends_on:
       - es02
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
@@ -190,6 +198,7 @@ services:
       retries: 120
 
   kibana:
+    container_name: kibana_${STACK_VERSION}
     depends_on:
       es01:
         condition: service_healthy
@@ -209,25 +218,30 @@ services:
       - ELASTICSEARCH_USERNAME=kibana_system
       - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
       - ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES=config/certs/ca/ca.crt
+      - XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY="BcLKe46AMAxoB1rDOnsNilvc7ZrpGVyl"
+      - SERVER_SSL_ENABLED=true
+      - SERVER_SSL_KEY=config/certs/kibana/kibana.key
+      - SERVER_SSL_CERTIFICATE=config/certs/kibana/kibana.crt
+
     mem_limit: ${MEM_LIMIT}
     healthcheck:
       test:
         [
           "CMD-SHELL",
-          "curl -s -I http://localhost:5601 | grep -q 'HTTP/1.1 302 Found'",
+          "curl -s -I https://localhost:5601 | grep -q 'HTTP/1.1 302 Found'",
         ]
       interval: 10s
       timeout: 10s
       retries: 120
 
   logstash:
+    container_name: logstash_${STACK_VERSION}
     depends_on:
       - kibana
     image: docker.elastic.co/logstash/logstash:${STACK_VERSION}
 #    command: bash -c "ls -lart /usr/share/logstash/"
     volumes:
       - ./certs:/usr/share/logstash/certs
-#      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
       - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
     ports:
       - "5044:5044"
@@ -251,8 +265,8 @@ services:
       - xpack.security.transport.ssl.key=config/certs/logstash/logstash.key
       - xpack.security.transport.ssl.certificate=config/certs/logstash/logstash.crt
       - xpack.security.transport.ssl.certificate_authorities=config/certs/ca/ca.crt
-#      - xpack.security.transport.ssl.verification_mode=certificate
-      - xpack.security.transport.ssl.verification_mode=none
+      - xpack.security.transport.ssl.verification_mode=certificate
+#      - xpack.security.transport.ssl.verification_mode=none
 
 volumes:
   certs:
