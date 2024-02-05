@@ -1,4 +1,3 @@
-version: "2.2"
 
 services:
   setup:
@@ -47,7 +46,7 @@ services:
           "    dns:\n"\
           "      - kibana\n"\
           "    ip:\n"\
-          "      - 127.0.0.1\n"\
+          "      - 192.168.10.200\n"\
           "  - name: logstash\n"\
           "    dns:\n"\
           "      - logstash\n"\
@@ -83,11 +82,13 @@ services:
     volumes:
       - ./certs:/usr/share/elasticsearch/config/certs
       - esdata01:/usr/share/elasticsearch/data
+      #- /mnt/databackup:/usr/share/elasticsearch/backup
     ports:
       - ${ES_PORT}:9200
     environment:
       - node.name=es01
       - cluster.name=${CLUSTER_NAME}
+      - path.repo=/usr/share/elasticsearch/backup
       - cluster.initial_master_nodes=es01,es02,es03
       - discovery.seed_hosts=es02,es03
       - ELASTIC_PASSWORD=${ELASTIC_PASSWORD}
@@ -126,9 +127,11 @@ services:
     volumes:
       - ./certs:/usr/share/elasticsearch/config/certs
       - esdata02:/usr/share/elasticsearch/data
+      #- /mnt/databackup:/usr/share/elasticsearch/backup
     environment:
       - node.name=es02
       - cluster.name=${CLUSTER_NAME}
+      - path.repo=/usr/share/elasticsearch/backup
       - cluster.initial_master_nodes=es01,es02,es03
       - discovery.seed_hosts=es01,es03
       - bootstrap.memory_lock=true
@@ -166,9 +169,11 @@ services:
     volumes:
       - ./certs:/usr/share/elasticsearch/config/certs
       - esdata03:/usr/share/elasticsearch/data
+      #- /mnt/databackup:/usr/share/elasticsearch/backup
     environment:
       - node.name=es03
       - cluster.name=${CLUSTER_NAME}
+      - path.repo=/usr/share/elasticsearch/backup
       - cluster.initial_master_nodes=es01,es02,es03
       - discovery.seed_hosts=es01,es02
       - bootstrap.memory_lock=true
@@ -280,4 +285,8 @@ volumes:
     driver: local
   kibanadata:
     driver: local
+
+
+
+
 
