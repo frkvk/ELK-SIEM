@@ -275,8 +275,6 @@ services:
 #      - xpack.security.transport.ssl.verification_mode=none
 
 volumes:
-  certs:
-    driver: local
   esdata01:
     driver: local
   esdata02:
