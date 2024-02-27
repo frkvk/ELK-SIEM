@@ -86,6 +86,7 @@ services:
     ports:
       - ${ES_PORT}:9200
     environment:
+      - ES_JAVA_OPTS=-Xmx3g -Xms3g
       - node.name=es01
       - cluster.name=${CLUSTER_NAME}
       - path.repo=/usr/share/elasticsearch/backup
@@ -129,6 +130,7 @@ services:
       - esdata02:/usr/share/elasticsearch/data
       #- /mnt/databackup:/usr/share/elasticsearch/backup
     environment:
+      - ES_JAVA_OPTS=-Xmx3g -Xms3g
       - node.name=es02
       - cluster.name=${CLUSTER_NAME}
       - path.repo=/usr/share/elasticsearch/backup
@@ -171,6 +173,7 @@ services:
       - esdata03:/usr/share/elasticsearch/data
       #- /mnt/databackup:/usr/share/elasticsearch/backup
     environment:
+      - ES_JAVA_OPTS=-Xmx3g -Xms3g
       - node.name=es03
       - cluster.name=${CLUSTER_NAME}
       - path.repo=/usr/share/elasticsearch/backup
